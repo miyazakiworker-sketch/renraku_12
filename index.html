@@ -160,105 +160,83 @@
 
 <!-- ーーー ここに次のステップでJavaScriptを追加します ーーー -->
 <script>
-  window.addEventListener('DOMContentLoaded', () => {
-    const actionSelect = document.getElementById("action-select");
-    const reasonSelect = document.getElementById("reason-select");
-    const bossInput = document.getElementById("boss-input");
-    const templateOutput = document.getElementById("template-output");
-    const copyLinkBtn = document.getElementById("copy-link-btn");
+    window.addEventListener('DOMContentLoaded', () => {
+        const actionSelect = document.getElementById("action-select");
+        const reasonSelect = document.getElementById("reason-select");
+        const bossInput = document.getElementById("boss-input");
+        const templateOutput = document.getElementById("template-output");
+        const copyLinkBtn = document.getElementById("copy-link-btn");
 
-    // 【機能④】LocalStorageから過去に登録した上司の名前を自動復元
-    const savedBoss = localStorage.getItem("cocoa-boss-name");
-    if (savedBoss) {
-      bossInput.value = savedBoss;
-    }
+        // LocalStorageから過去の上司の名前を自動復元
+        const savedBoss = localStorage.getItem("cocoa-boss-name");
+        if (savedBoss) {
+            bossInput.value = savedBoss;
+        }
 
-    // 【機能①】目的と理由に応じた、マナー100点満点の実用的なテンプレの塊
-        // 【修正】100%マナーに準拠したビジネス・公的連絡用のテキストデータ
-        // 【バレ防止アプデ】同じ選択でも、毎回違う言い回しをランダムで生み出すプロ仕様データ
-    const templates = {
-      absent: {
-        cold: [
-          "お疲れ様です。大変恐れ入りますが、今朝から体調不良による発熱があり、本日は業務をお休みさせていただきたくご連絡いたしました。急なご連絡となり大変申し訳ありません。本日は終日、静養に努めます。",
-          "お疲れ様です。誠に申し訳ありませんが、昨夜からの体調不良が長引いており、本日は終日静養させていただきたく存じます。急なお休みとなりご迷惑をおかけしますが、何卒よろしくお願いいたします。",
-          "お疲れ様です。大変恐縮ですが、今朝から強い寒気と発熱の症状があるため、本日は欠勤させていただけますでしょうか。急なご連絡で恐縮ですが、体調が戻り次第ご連絡いたします。"
-        ],
-        train: [
-          "お疲れ様です。現在、通勤電車の運行トラブルによる大規模な遅延が発生しております。代替の交通手段も麻痺している状況のため、大変恐れ入りますが、本日はお休みをいただきたくご連絡いたしました。ご迷惑をおかけし深くお詫び申し上げます。",
-          "お疲れ様です。利用している路線が事故の影響で運転見合わせとなっており、現状、出社することが極めて難しい状況です。誠に勝手ながら、本日はお休みをいただきたく存じます。ご迷惑をおかけし大変申し訳ありません。"
-        ],
-        private: [
-          "お疲れ様です。大変私事で恐縮ですが、私用のため本日お休みをいただきたく存じます。急なご連絡となり申し訳ありません。何卒よろしくお願いいたします。",
-          "お疲れ様です。私事都合により、誠に勝手ながら本日の業務をお休みさせていただきたくご連絡いたしました。ご不便をおかけしますが、何卒よろしくお願いいたします。"
-        ]
-      },
-      late: {
-        cold: [
-          "お疲れ様です。今朝から少し体調が優れないため、急ぎ病院を受診してから出社させていただきたく存じます。1時間ほど遅刻する見込みです。ご迷惑をおかけし大変申し訳ありません。",
-          "お疲れ様です。大変恐れ入りますが、朝から腹痛の症状があるため、薬を服用し回復を待ってから出社させていただけますでしょうか。通常より30分ほど遅れての到着となる見込みです。"
-        ],
-        train: [
-          "お疲れ様です。現在、利用している路線の電車が遅延しており、駅にて運転見合わせとなっております。復旧の目処が立っていないため、本日の出社が30分ほど遅れる見込みです。進捗があり次第、追ってご連絡いたします。",
-          "お疲れ様です。通勤途中の路線で人身事故が発生し、電車が完全にストップしております。別のルートを検討中ですが、到着が1時間ほど遅刻する可能性がございます。申し訳ありません。"
-        ],
-        private: [
-          "お疲れ様です。大変私事で恐縮ですが、午前中に外せない用事を済ませてから向かうため、本日は11時頃に出社いたします。事前の共有が漏れてしまい、誠に申し訳ありません。"
-        ]
-      },
-      paid: {
-        cold: [
-          "お疲れ様です。急な体調不良のため、大変恐れ入りますが、本日の出勤を有給休暇の取得に振り替えさせていただきたくご連絡いたしました。急な変更となり大変申し訳ありませんが、何卒よろしくお願いいたします。"
-        ],
-        train: [
-          "お疲れ様です。電車の運行停止による移動不可のため、大変勝手ながら、本日の出勤を有給休暇の取得に変更させていただきたく存じます。ご迷惑をおかけいたしますが、何卒よろしくお願いいたします。"
-        ],
-        private: [
-          "お疲れ様です。私用のため、本日は有給休暇を申請させていただきます。業務の引き継ぎ等は事前に進めております。何卒よろしくお願いいたします。"
-        ]
-      }
-    };
+        // 100%マナーに準拠したビジネス・公的連絡用のテキストデータ（複数バリエーション）
+        const templates = {
+            absent: {
+                cold: [
+                    "大変恐れ入りますが、今朝から体調不良による発熱があり、本日は業務をお休みさせていただきたくご連絡いたしました。急なご連絡となり大変申し訳ありません。本日は終日、静養に努めます。",
+                    "誠に申し訳ありませんが、昨夜からの体調不良が長引いており、本日は終日静養させていただきたく存じます。急なお休みとなりご迷惑をおかけしますが、何卒よろしくお願いいたします。",
+                    "大変恐縮ですが、今朝から強い寒気と発熱の症状があるため、本日は欠勤させていただけますでしょうか。急なご連絡で恐縮ですが、体調が戻り次第ご連絡いたします。"
+                ],
+                train: [
+                    "現在、通勤電車の運行トラブルによる大規模な遅延が発生しております。代替の交通手段も麻痺している状況のため、大変恐れ入りますが、本日はお休みをいただきたくご連絡いたしました。ご迷惑をおかけし深くお詫び申し上げます。",
+                    "利用している路線が事故の影響で運転見合わせとなっており、現状、出社することが極めて難しい状況です。誠に勝手ながら、本日はお休みをいただきたく存じます。ご迷惑をおかけし大変申し訳ありません。"
+                ],
+                private: [
+                    "大変私事で恐縮ですが、私用のため本日お休みをいただきたく存じます。急なご連絡となり申し訳ありません。何卒よろしくお願いいたします。",
+                    "私事都合により、誠に勝手ながら本日の業務をお休みさせていただきたくご連絡いたしました。ご不便をおかけしますが、何卒よろしくお願いいたします。"
+                ]
+            },
+            late: {
+                cold: [
+                    "今朝から少し体調が優れないため、急ぎ病院を受診してから出社させていただきたく存じます。1時間ほど遅刻する見込みです。ご迷惑をおかけし大変申し訳ありません。",
+                    "大変恐れ入りますが、朝から腹痛の症状があるため、薬を服用し回復を待ってから出社させていただけますでしょうか。通常より30分ほど遅れての到着となる見込みです。"
+                ],
+                train: [
+                    "現在、利用している路線の電車が遅延しており、駅にて運転見合わせとなっております。復旧の目処が立っていないため、本日の出社が30分ほど遅れる見込みです。進捗があり次第、追ってご連絡いたします。",
+                    "通勤途中の路線で人身事故が発生し、電車が完全にストップしております。別のルートを検討中ですが、到着が1時間ほど遅刻する可能性がございます。申し訳ありません。"
+                ],
+                private: [
+                    "大変私事で恐縮ですが、午前中に外せない用事を済ませてから向かうため、本日は11時頃に出社いたします。事前の共有が漏れてしまい、誠に申し訳ありません。"
+                ]
+            },
+            paid: {
+                cold: ["急な体調不良のため、大変恐れ入りますが、本日の出勤を有給休暇の取得に振り替えさせていただきたくご連絡いたしました。急な変更となり大変申し訳ありませんが、何卒よろしくお願いいたします。"],
+                train: ["電車の運行停止による移動不可のため、大変勝手ながら、本日の出勤を有給休暇の取得に変更させていただきたく存じます。ご迷惑をおかけいたしますが、何卒よろしくお願いいたします。"],
+                private: ["私用のため、本日は有給休暇を申請させていただきます。業務の引き継ぎ等は事前に進めております。何卒よろしくお願いいたします。"]
+            }
+        };
 
-    // テンプレを画面のテキストエリアにリアルタイム生成する処理（ランダムハック）
-    function generateText() {
-      const action = actionSelect.value;
-      const reason = reasonSelect.value;
-      const boss = bossInput.value.trim() || "関係者各位";
-
-      // 選んだ目的と理由の配列から、ランダムで1つを引っこ抜く仕様に変更
-      const options = templates[action][reason];
-      const randomIndex = Math.floor(Math.random() * options.length);
-      const baseText = options[randomIndex];
-
-      const finalText = boss + "、\n" + baseText;
-      
-      templateOutput.value = finalText;
-      localStorage.setItem("cocoa-boss-name", boss);
-    }
-
-            // テンプレを画面のテキストエリアにリアルタイム生成する処理
+        // テンプレを画面のテキストエリアに1つだけランダム生成する処理
         function generateText() {
             const action = actionSelect.value;
             const reason = reasonSelect.value;
             const boss = bossInput.value.trim() || "関係者各位";
 
-            // バグを完全解消：上司の名前にビジネス文章を綺麗に直結
-            const finalText = boss + "、\n" + templates[action][reason];
+            // 指定された配列から、ランダムで確実に1つだけを抽出するロジック
+            const options = templates[action][reason];
+            const randomIndex = Math.floor(Math.random() * options.length);
+            const baseText = options[randomIndex];
+
+            // 組み立て
+            const finalText = boss + "、\n" + baseText;
             
             templateOutput.value = finalText;
             localStorage.setItem("cocoa-boss-name", boss);
         }
 
-        // 🔍 復活：客がカチカチ選択を変えたり、名前を打ち変えた瞬間にリアルタイム連動させるイベントリスナー
+        // 客が入力や選択を変えた瞬間にリアルタイム連動
         actionSelect.addEventListener("change", generateText);
         reasonSelect.addEventListener("change", generateText);
         bossInput.addEventListener("input", generateText);
 
-        // 🔒 コピーリンクボタンの処理：文法を壊さず、LINEやメールに最速で貼れるようクリップボードへ直撃コピー
+        // コピーリンクボタンのイベント処理
         if (copyLinkBtn) {
-            // 最初はリンクを表示させておく
             copyLinkBtn.style.display = "block";
-            
-            copyLinkBtn.addEventListener("click", (e) => {
+            copyLinkBtn.addEventListener("click", () => {
                 const textToCopy = templateOutput.value;
                 if (!textToCopy) return;
 
@@ -276,7 +254,7 @@
             });
         }
 
-        // 初期起動時にも最初のテンプレをシュパッと自動表示
+        // 初期起動時にも最初のテンプレを自動表示
         generateText();
     });
 </script>
