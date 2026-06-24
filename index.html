@@ -193,31 +193,50 @@
       }
     };
 
-    // テンプレを画面のテキストエリアにリアルタイム生成する処理
+            // テンプレを画面のテキストエリアにリアルタイム生成する処理
         function generateText() {
-      const action = actionSelect.value;
-      const reason = reasonSelect.value;
-      const boss = bossInput.value.trim() || "関係者各位";
+            const action = actionSelect.value;
+            const reason = reasonSelect.value;
+            const boss = bossInput.value.trim() || "関係者各位";
 
-      // 組み立てバグを解消：上司の名前に、ビジネス文章を綺麗に直結させる
-      const finalText = boss + "、\n" + templates[action][reason];
-      
-      templateOutput.value = finalText;
-      localStorage.setItem("cocoa-boss-name", boss);
-    }
+            // バグを完全解消：上司の名前にビジネス文章を綺麗に直結
+            const finalText = boss + "、\n" + templates[action][reason];
+            
+            templateOutput.value = finalText;
+            localStorage.setItem("cocoa-boss-name", boss);
+        }
 
+        // 🔍 復活：客がカチカチ選択を変えたり、名前を打ち変えた瞬間にリアルタイム連動させるイベントリスナー
+        actionSelect.addEventListener("change", generateText);
+        reasonSelect.addEventListener("change", generateText);
+        bossInput.addEventListener("input", generateText);
 
-      const baseText = templates[action][reason];
-      const finalText = boss + "お疲れ様です。\n\n" + baseText;
-      
-      // テキストエリアに反映
-      templateOutput.value = finalText;
+        // 🔒 コピーリンクボタンの処理：文法を壊さず、LINEやメールに最速で貼れるようクリップボードへ直撃コピー
+        if (copyLinkBtn) {
+            // 最初はリンクを表示させておく
+            copyLinkBtn.style.display = "block";
+            
+            copyLinkBtn.addEventListener("click", (e) => {
+                const textToCopy = templateOutput.value;
+                if (!textToCopy) return;
 
-      // 自動保存
-      localStorage.setItem("cocoa-boss-name", boss);
-    }
+                navigator.clipboard.writeText(textToCopy).then(() => {
+                    copyLinkBtn.textContent = "コピー完了！そのままLINE等の画面へ貼れます✅";
+                    copyLinkBtn.style.backgroundColor = "#2ed573";
+                    
+                    setTimeout(() => {
+                        copyLinkBtn.textContent = "文章をコピーしてXへ完了報告 📋";
+                        copyLinkBtn.style.backgroundColor = "#1da1f2";
+                    }, 2000);
+                }).catch(() => {
+                    console.log("コピーエラー");
+                });
+            });
+        }
 
-  });
+        // 初期起動時にも最初のテンプレをシュパッと自動表示
+        generateText();
+    });
 </script>
 
 </body>
