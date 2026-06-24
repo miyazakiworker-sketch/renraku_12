@@ -159,6 +159,65 @@
 </div>
 
 <!-- ーーー ここに次のステップでJavaScriptを追加します ーーー -->
+<script>
+  window.addEventListener('DOMContentLoaded', () => {
+    const actionSelect = document.getElementById("action-select");
+    const reasonSelect = document.getElementById("reason-select");
+    const bossInput = document.getElementById("boss-input");
+    const templateOutput = document.getElementById("template-output");
+    const copyLinkBtn = document.getElementById("copy-link-btn");
+
+    // 【機能④】LocalStorageから過去に登録した上司の名前を自動復元
+    const savedBoss = localStorage.getItem("cocoa-boss-name");
+    if (savedBoss) {
+      bossInput.value = savedBoss;
+    }
+
+    // 【機能①】目的と理由に応じた、マナー100点満点の実用的なテンプレの塊
+    const templates = {
+      absent: {
+        cold: "大変お疲れ様です。本日、早朝から体調不良による発熱があり、誠にだるいのですが本日の業務をお休みさせていただきたくご連絡いたしました。急なご連絡となり大変申し訳ありません。本日は終日静養いたします。",
+        train: "大変お疲れ様です。本日、通勤電車の運行トラブルによる大規模な遅延が発生しております。代替の交通手段も現在麻痺しているため、誠にだるいのですが本日はお休みをいただきたくご連絡いたしました。ご迷惑をおかけし深くお詫び申し上げます。",
+        private: "お疲れ様です。私用のため、本日お休みをいただきたく存じます。急なご連絡となり大変申し訳ありません。何卒よろしくお願いいたします。"
+      },
+      late: {
+        cold: "大変お疲れ様です。今朝から少し体調が優れないため、急ぎ病院に立ち寄ってから出社いたします。1時間ほど遅刻する見込みです。だるい体調を早く治して向かいます。ご迷惑をおかけし申し訳ありません。",
+        train: "大変お疲れ様です。現在、利用している路線の電車が遅延しており、駅で運転見合わせとなっております。復旧の目処が立っていないため、本日の出社が30分ほど遅刻する見込みです。進捗があり次第また連絡いたします。",
+        private: "お疲れ様です。午前中に外せない私用を済ませてから向かうため、本日は11時頃に出社いたします。事前に共有できておらず申し訳ありません。"
+      },
+      paid: {
+        cold: "お疲れ様です。本日、急な体調不良のため、本日の出勤を有給休暇の取得に振り替えさせていただきたくご連絡いたしました。ご迷惑をおかけしますが、何卒よろしくお願いいたします。",
+        train: "お疲れ様です。電車の運行停止による移動不可のため、だるい手戻りを避けるべく、誠に勝手ながら本日の出勤を有給休暇の取得に変更させていただけますと幸いです。よろしくお願いいたします。",
+        private: "お疲れ様です。私用のため、有給休暇の取得を申請いたします。業務の引き継ぎ等は事前に進めておきます。何卒よろしくお願いいたします。"
+      }
+    };
+
+    // テンプレを画面のテキストエリアにシュパッとリアルタイム生成する処理
+    function generateText() {
+      const action = actionSelect.value;
+      const reason = reasonSelect.value;
+      const boss = bossInput.value.trim() || "上司";
+
+      // 上司の名前、目的、理由を組み合わせて完璧な連絡文章を作る
+      const baseText = templates[action][reason];
+      const finalText = boss + "、\n\n" + baseText;
+      
+      // テキストエリアに反映（客がここから自由に手動で打ち替え・入力も可能！）
+      templateOutput.value = finalText;
+
+      // 【機能④】上司の名前が変わるたびに、裏側で自動保存（次開いたときも残る）
+      localStorage.setItem("cocoa-boss-name", boss);
+    }
+
+    // 客がカチカチ選択を変えたり、名前を打ち変えた瞬間にリアルタイム連動
+    actionSelect.addEventListener("change", generateText);
+    reasonSelect.addEventListener("change", generateText);
+    bossInput.addEventListener("input", generateText);
+
+    // 初期起動時にも最初のテンプレをシュパッと自動表示
+    generateText();
+  });
+</script>
 
 </body>
 </html>
