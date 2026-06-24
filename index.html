@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>上司も納得！だるい連絡一瞬テンプレ作成器</title>
+  <style>
+    /* ココアさん標準：PC真ん中寄せ・スマホ完全フィット・集中できる黒モード */
+    body {
+      background-color: #12161a;
+      font-family: 'Helvetica Neue', Arial, 'Hiragino Kaku Gothic ProN', sans-serif;
+      color: #e2e8f0;
+      margin: 0;
+      padding: 20px 15px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      box-sizing: border-box;
+    }
+    .container {
+      max-width: 440px;
+      width: 100%;
+      background: #1a202c;
+      padding: 25px 20px;
+      border-radius: 20px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+      border: 1px solid #2d3748;
+      box-sizing: border-box;
+      text-align: center;
+    }
+    h1 {
+      font-size: 1.25rem;
+      color: #9b59b6;
+      margin-top: 0;
+      margin-bottom: 20px;
+      border-bottom: 3px solid #9b59b6;
+      padding-bottom: 10px;
+    }
+    label {
+      font-weight: bold;
+      font-size: 13px;
+      color: #a0aec0;
+      display: block;
+      text-align: left;
+      margin-top: 15px;
+    }
+    select, input[type="text"] {
+      width: 100%;
+      padding: 10px 12px;
+      background-color: #12161a;
+      border: 2px solid #4a5568;
+      border-radius: 8px;
+      color: #fff;
+      font-size: 14px;
+      outline: none;
+      box-sizing: border-box;
+      margin-top: 6px;
+    }
+    select:focus, input[type="text"]:focus { border-color: #9b59b6; }
+    
+    /* 綺麗に偽装した本物のXリンクボタン */
+    #copy-link-btn {
+      display: none;
+      width: 100%;
+      padding: 12px;
+      border: none;
+      border-radius: 25px;
+      font-size: 15px;
+      font-weight: bold;
+      cursor: pointer;
+      margin-top: 20px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+      transition: background 0.2s;
+      box-sizing: border-box;
+      background-color: #1da1f2;
+      color: white;
+      text-decoration: none;
+      text-align: center;
+    }
+    #copy-link-btn:hover { background-color: #4ab3f4; }
+
+    .result-box {
+      background-color: #12161a;
+      padding: 15px;
+      border-radius: 12px;
+      margin-top: 20px;
+      text-align: left;
+      border: 1px solid #2d3748;
+    }
+    .result-title { font-weight: bold; color: #fff; font-size: 14px; margin-bottom: 10px; border-left: 4px solid #9b59b6; padding-left: 8px; }
+    
+    #template-output {
+      width: 100%;
+      height: 120px;
+      background-color: #1a202c;
+      border: 1px dashed #4a5568;
+      color: #fff;
+      padding: 10px;
+      border-radius: 8px;
+      font-size: 13px;
+      resize: none;
+      outline: none;
+      box-sizing: border-box;
+    }
+
+    .ad-space-box {
+      width: 100%; max-width: 440px; background-color: #1a202c; border: 2px dashed #2d3748; border-radius: 12px; padding: 15px; text-align: center; color: #718096; margin-top: 20px; box-sizing: border-box;
+    }
+    .ad-label { font-size: 10px; font-weight: bold; color: #4a5568; margin-bottom: 5px; }
+    .ad-text { font-size: 11px; color: #718096; line-height: 1.4; }
+
+    .footer-link { text-align: center; margin-top: 20px; font-size: 12px; }
+    .footer-link a { color: #9b59b6; text-decoration: none; font-weight: bold; }
+    .footer-link a:hover { text-decoration: underline; }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <h1>📱 だるい連絡一瞬テンプレ作成器</h1>
+  
+  <label>① 連絡の目的</label>
+  <select id="action-select">
+    <option value="absent">本日はお休みします（欠勤）</option>
+    <option value="late">少し遅刻します（遅刻）</option>
+    <option value="paid">有給休暇を申請します（有給）</option>
+  </select>
+
+  <label>② 理由の選択</label>
+  <select id="reason-select">
+    <option value="cold">突然の体調不良・発熱のため</option>
+    <option value="train">電車の遅延・運行トラブルのため</option>
+    <option value="private">私用のため（有給用）</option>
+  </select>
+
+  <label>③ 上司・連絡相手の名前</label>
+  <input type="text" id="boss-input" value="木村部長">
+
+  <!-- 生成された結果ボックス（最初から表示してリアルタイムに変化させます） -->
+  <div class="result-box">
+    <div class="result-title">自動生成された文章</div>
+    <textarea id="template-output" readonly></textarea>
+    
+    <!-- 🔒 セキュリティ＆タブ重複：target名を「cocoa_x_tab」に完全固定 -->
+    <a href="https://x.com" target="cocoa_x_tab" rel="noopener noreferrer" id="copy-link-btn">文章をコピーしてXへ完了報告 📋</a>
+  </div>
+</div>
+
+<div class="ad-space-box">
+  <div class="ad-label">Sponsored</div>
+  <div class="ad-text">※当サイトは開発費・サーバー維持費のために広告を掲載予定です。</div>
+</div>
+
+<!-- 🔒 看板リンク：同一タブに流れるようtarget固定 ＆ セキュリティお守り -->
+<div class="footer-link">
+  開発者：<a href="https://x.com/cocoa_next7" target="cocoa_x_tab" rel="noopener noreferrer">ココア (@cocoa_next7)</a>
+</div>
+
+<!-- ーーー ここに次のステップでJavaScriptを追加します ーーー -->
+
+</body>
+</html>
